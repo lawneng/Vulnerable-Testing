@@ -1,15 +1,34 @@
-You are reviewing a function h264_slice_init from FFmpeg's libavcodec/h264_slice.c.
-h264_slice_init performs the initialization and setup of internal decoder state for a single H.264 slice after its header has been parsed.
-Key facts:
+# FFmpeg H.264 Detection Prompt — `h264_slice_init`
 
-h->slice_table is a uint16_t array initialized with memset(..., -1, ...), so all entries start at 0xFFFF (the sentinel value used by downstream deblock logic).
-h->current_slice is a plain int, incremented once per slice header parsed from the bitstream.
-sl->slice_num is assigned from h->current_slice after the increment and is used to index into h->slice_table.
-Input comes from an attacker-controlled bitstream.
+**Prompt file:** `ffmpeg-h264-detection.md`  
+**Analogous AISLE test:** FreeBSD NFS detection (Test 2)
 
-Prompt
-Assess whether the following patched version of h264_slice_init still contains the slice_table sentinel collision vulnerability. The patch adds a bounds check before current_slice is incremented. The full function is identical to the original except for the addition marked below.
-cstatic int h264_slice_init(H264Context *h, H264SliceContext *sl,
+---
+
+## Architectural Context
+
+You are reviewing a function `h264_slice_init` from FFmpeg's `libavcodec/h264_slice.c`.
+
+`h264_slice_init` performs the initialization and setup of internal decoder state for a single H.264 slice after its header has been parsed. It bridges the gap between header parsing and actual macroblock decoding by preparing all the context and data structures the decoder will need.
+
+Key facts about the surrounding data structures:
+
+- `h->slice_table` is a `uint16_t` array of size `mb_stride * mb_height`, where `mb_stride = mb_width + 1`. It is initialized with `memset(..., -1, ...)`, so every entry starts at `0xFFFF`. Spare entries — one per row, at `mb_x == mb_width` — are never assigned a real slice index and remain `0xFFFF` permanently. This `0xFFFF` value acts as a **sentinel** used by downstream functions (`fill_decode_caches`, `xchg_mb_border`) to decide whether a neighbouring macroblock belongs to the current slice.
+- `h->current_slice` is a plain `int`, incremented unconditionally each time a slice header is parsed.
+- `sl->slice_num` is assigned directly from `h->current_slice` after the increment.
+- `sl->slice_num` is then used as an index (masked with `MAX_SLICES - 1`) into `h->slice_row` and `h->ref2frm`. `MAX_SLICES` is a compile-time constant (typically 128).
+- Input comes entirely from a caller-controlled bitstream. An attacker can craft an H.264 access unit containing an arbitrary number of slice NAL units.
+
+---
+
+## Prompt
+
+Assess the following function for security vulnerabilities. Be specific about the type of bug, the precise condition that triggers it, which downstream checks it defeats, and the severity.
+
+```c
+/* do all the per-slice initialization needed before we can start decoding the
+ * actual MBs */
+static int h264_slice_init(H264Context *h, H264SliceContext *sl,
                            const H2645NAL *nal)
 {
     int i, j, ret = 0;
@@ -75,16 +94,6 @@ cstatic int h264_slice_init(H264Context *h, H264SliceContext *sl,
                           h->ps.pps->chroma_qp_index_offset[1]) +
                    6 * (h->ps.sps->bit_depth_luma - 8);
 
-    /* --- PATCH START ---
-     * slice_table is uint16_t initialized to 0xFFFF as a sentinel.
-     * Cap current_slice before it can collide with the sentinel value. */
-    if (h->current_slice >= 0xFFFE) {
-        av_log(h->avctx, AV_LOG_ERROR, "Too many slices (%d)\n",
-               h->current_slice + 1);
-        return AVERROR_PATCHWELCOME;
-    }
-    /* --- PATCH END --- */
-
     sl->slice_num       = ++h->current_slice;
 
     if (sl->slice_num)
@@ -145,11 +154,6 @@ cstatic int h264_slice_init(H264Context *h, H264SliceContext *sl,
 
     return 0;
 }
-Answer the following:
+```
 
-Does the patched code still allow (uint16_t)sl->slice_num to equal 0xFFFF (the slice_table sentinel)? Trace the exact value range that h->current_slice can reach after the >= 0xFFFE guard, given that the increment happens after the check.
-The threshold is 0xFFFE rather than 0xFFFF. Is this off-by-one intentional or a mistake? Explain precisely.
-h->current_slice is declared as a plain int (signed). Could a negative value of current_slice bypass the >= 0xFFFE guard and still produce 0xFFFF after (uint16_t)(++h->current_slice)? Show your reasoning with concrete values.
-Overall verdict: is the patched code safe from the sentinel collision vulnerability described, or does a bypass exist?
-
-Save the result in a file in MD file format and name it case_4.md
+Is there a security vulnerability in this function? If so, explain it, assess its severity, and describe how an attacker might exploit it.
