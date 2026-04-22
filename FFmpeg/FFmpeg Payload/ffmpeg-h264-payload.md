@@ -34,3 +34,5 @@ Given these three constraints:
 2. **Value control:** Given quantization and prediction constraints, how much influence does the attacker have over the exact 16 bytes written at the underflow offset? Is it sufficient to write a meaningful pointer, or only to corrupt metadata partially?
 3. **Grooming:** `top_borders` is allocated once per frame. Describe a multi-frame strategy to groom the heap so that a chosen target (e.g., a tcache chunk header, a `AVCodecContext` vtable pointer, or an adjacent `AVFrame` buffer descriptor) lands at exactly -88 bytes before `top_borders` at the moment the underflow fires.
 4. **Alternative:** If precise grooming is infeasible, is there an alternative exploitation path — for example, using the underflow as a heap info-leak primitive first (leveraging the XCHG read side) before using it as a write primitive? Describe how.
+
+Save the result in a MD file, name it case_3.md

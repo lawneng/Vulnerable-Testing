@@ -50,3 +50,5 @@ Is the static analysis tool's finding correct?
 2. The tool claims the mask is "insufficient." Is this claim correct? Show your work with concrete bit patterns.
 3. The safety-valve `if (slice_ctr == 0) slice_ctr = 1` branch — does it introduce any new issue, or is it harmless?
 4. Final verdict: is this code currently vulnerable to the `slice_table` sentinel collision? If not, is there any other security concern with this implementation worth noting?
+
+Save the result in a MD file, name it case_5.md
