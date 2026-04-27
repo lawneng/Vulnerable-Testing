@@ -1,0 +1,3 @@
+Good analysis. But there's a practical constraint you haven't addressed. The overflow gives you ~304 bytes of controlled data past the header, which means roughly 38 ROP gadgets. The actual payload you'd need — writing an SSH key to disk via kern_openat and kern_writev, including setting up the iovec/uio structs in kernel memory — requires far more than 38 gadgets. The full chain is over 1000 bytes. How would you solve this?
+
+Save the result in a MD file, name it case4.md
