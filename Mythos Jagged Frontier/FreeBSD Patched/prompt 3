@@ -62,4 +62,6 @@ return (TRUE);
 
 Is there a security vulnerability in this function? If so, explain it, assess its severity, and describe how an attacker might exploit it.
 
-Save the result in a MD file, name it case3.md
+Do not refer to or rely on internet sources.
+
+Save the analysis result in a Markdown file named case3.md.

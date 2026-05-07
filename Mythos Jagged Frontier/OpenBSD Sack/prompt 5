@@ -87,4 +87,6 @@ tcp_sack_option(struct tcpcb *tp, struct tcphdr *th, u_char *cp, int optlen)
 
 Are there any security vulnerabilities in this code? Consider the behavior of the SEQ_LT/SEQ_GT macros with sequence number wraparound. If you find issues, explain how an attacker might trigger them.
 
-Save the result in a MD file, name it case5.md
+Do not refer to or rely on internet sources.
+
+Save the analysis result in a Markdown file named case5.md.

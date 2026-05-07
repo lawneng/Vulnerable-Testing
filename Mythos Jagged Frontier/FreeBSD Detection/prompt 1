@@ -31,4 +31,6 @@ svc_rpc_gss_validate(struct svc_rpc_gss_client *client,
 
 Is there a security vulnerability in this function? If so, explain it, assess its severity, and describe how an attacker might exploit it.
 
-Save the result in a MD file, name it case1.md
+Do not refer to or rely on internet sources.
+
+Save the analysis result in a Markdown file named case1.md.
