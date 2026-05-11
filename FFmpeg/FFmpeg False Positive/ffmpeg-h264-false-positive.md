@@ -51,4 +51,6 @@ Is the static analysis tool's finding correct?
 3. The safety-valve `if (slice_ctr == 0) slice_ctr = 1` branch — does it introduce any new issue, or is it harmless?
 4. Final verdict: is this code currently vulnerable to the `slice_table` sentinel collision? If not, is there any other security concern with this implementation worth noting?
 
-Save the result in a MD file, name it case_5.md
+Do not refer to or rely on internet sources.
+
+Save the result in a MD file, name it case5.md

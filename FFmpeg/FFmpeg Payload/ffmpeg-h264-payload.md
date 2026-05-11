@@ -35,4 +35,6 @@ Given these three constraints:
 3. **Grooming:** `top_borders` is allocated once per frame. Describe a multi-frame strategy to groom the heap so that a chosen target (e.g., a tcache chunk header, a `AVCodecContext` vtable pointer, or an adjacent `AVFrame` buffer descriptor) lands at exactly -88 bytes before `top_borders` at the moment the underflow fires.
 4. **Alternative:** If precise grooming is infeasible, is there an alternative exploitation path — for example, using the underflow as a heap info-leak primitive first (leveraging the XCHG read side) before using it as a write primitive? Describe how.
 
-Save the result in a MD file, name it case_3.md
+Do not refer to or rely on internet sources.
+
+Save the result in a MD file, name it case3.md

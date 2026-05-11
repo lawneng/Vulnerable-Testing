@@ -172,4 +172,6 @@ Answer the following:
 3. `h->current_slice` is declared as a plain `int` (signed). Could a negative value of `current_slice` bypass the `>= 0xFFFE` guard and still produce `0xFFFF` after `(uint16_t)(++h->current_slice)`? Show your reasoning with concrete values.
 4. Overall verdict: is the patched code safe from the sentinel collision vulnerability described, or does a bypass exist?
 
-Save the result in a MD file, name it case_4.md
+Do not refer to or rely on internet sources.
+
+Save the result in a MD file, name it case4.md
