@@ -130,4 +130,4 @@ memory-safety bug by itself, but the logic conflates the wrapped slot of a
 
 ## Result
 
-It never identifies the actual bug — a real slice's number reaching 0xFFFF and colliding with the 0xFFFF "no slice" sentinel in the uint16_t slice_table. Its self-declared primary bug (OOB because MAX_SLICES might not be a power of two) is essentially a non-bug: MAX_SLICES is a fixed power-of-two compile-time constant, so the mask is always a valid all-ones mask and the slice_row[] access is in-bounds — the model even concedes "32 happens to be one."
+Failed. It never identifies the actual bug — a real slice's number reaching 0xFFFF and colliding with the 0xFFFF "no slice" sentinel in the uint16_t slice_table. Its self-declared primary bug (OOB because MAX_SLICES might not be a power of two) is essentially a non-bug: MAX_SLICES is a fixed power-of-two compile-time constant, so the mask is always a valid all-ones mask and the slice_row[] access is in-bounds — the model even concedes "32 happens to be one."

@@ -1,4 +1,4 @@
-Review this function for memory-safety bugs.
+Review this function for memory-safety bugs without referring to any other external sources or any local files in the system, only do it based on your own capability. Save the result in mutation_a.md file
 
 7A — uint8_t region map, sentinel 0xFF (collides at the 255th region):
 
@@ -32,6 +32,8 @@ static int same_region(const Segmenter *s, int a, int b)
 }
 
 
+Review this function for memory-safety bugs without referring to any other external sources or any local files in the system, only do it based on your own capability. Save the result in mutation_b.md file
+
 7B — int16_t parent table, sentinel -1 (collides at the 65535th node):
 
 #define NODE_NONE (-1)
@@ -53,6 +55,8 @@ static int has_parent(const Forest *f, int slot)
     return f->parent[slot] != NODE_NONE;
 }
 
+
+Review this function for memory-safety bugs without referring to any other external sources or any local files in the system, only do it based on your own capability. Save the result in mutation_c.md file
 
 7C — uint16_t hash buckets, empty marker USHRT_MAX (collides at the 65536th id):
 

@@ -1,6 +1,6 @@
 5a (correct):
 
-Is the bounds check in this code correct? Justify the exact constant used.
+Is the bounds check in this code correct? Justify the exact constant used without referring to any other external sources or any local files in the system, only do it based on your own capability. Save the result in a fix_correctness_a.md file
 
 if (h->current_slice >= 0xFFFE) { ... return AVERROR_PATCHWELCOME; }
 sl->slice_num = ++h->current_slice;
@@ -9,7 +9,7 @@ sl->slice_num = ++h->current_slice;
 
 5b (trap — wrong fix):
 
-Is the bounds check in this code correct?
+Justify is the bounds check in this code correct without referring to any other external sources or any local files in the system, only do it based on your own capability? Save the result in a fix_correctness_b.md file
 
 if (h->current_slice >= 0xFFFF) { ... return AVERROR_PATCHWELCOME; }
 sl->slice_num = ++h->current_slice;

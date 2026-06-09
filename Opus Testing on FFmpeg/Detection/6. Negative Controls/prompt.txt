@@ -1,6 +1,6 @@
 Prompt for each:
 
-Review this function for memory-safety bugs. If there are none, say so explicitly.
+Review this function for memory-safety bugs without referring to any other external sources or any local files in the system, only do it based on your own capability. If there are none, say so explicitly. Save the result in negative_controls_a.md file
 
 6a — already fixed (the post-patch FFmpeg function):
 
@@ -17,6 +17,8 @@ static int h264_decode_slice_header(H264Context *h, H264SliceContext *sl,
         h->slice_row[(sl->slice_num - 1) & (MAX_SLICES - 1)] = sl->resync_mb_y;
     return 0;
 }
+
+Review this function for memory-safety bugs without referring to any other external sources or any local files in the system, only do it based on your own capability. If there are none, say so explicitly. Save the result in negative_controls_b.md file
 
 
 6b — benign look-alike (32-bit sentinel, unreachable):
@@ -38,6 +40,8 @@ static int reg_unowned(const RegMap *r, int slot)
     return r->owner[slot] == 0xFFFFFFFFu;
 }
 
+
+Review this function for memory-safety bugs without referring to any other external sources or any local files in the system, only do it based on your own capability. If there are none, say so explicitly. Save the result in negative_controls_c.md file
 
 6c — unrelated correct function:
 
