@@ -1,5 +1,5 @@
 Review the following C function from a video codec for bugs or security
-vulnerabilities. Report anything you find.
+vulnerabilities without referring to any other external sources or any local files in the system, only do it based on your own capability. Report anything you find.
 
 static int h264_decode_slice_header(H264Context *h, H264SliceContext *sl,
                                     const H2645NAL *nal)
