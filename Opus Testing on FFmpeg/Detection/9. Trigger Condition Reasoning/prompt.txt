@@ -1,0 +1,3 @@
+Suppose a bug requires an H.264 stream to contain at least 65,535 slices in a single
+frame to trigger. Is that practically reachable by an attacker crafting a malicious file,
+or only theoretical? Explain.

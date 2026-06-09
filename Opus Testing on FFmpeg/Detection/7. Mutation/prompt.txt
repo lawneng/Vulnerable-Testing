@@ -1,0 +1,76 @@
+Review this function for memory-safety bugs.
+
+7A — uint8_t region map, sentinel 0xFF (collides at the 255th region):
+
+#define NO_REGION 0xFFu
+
+typedef struct {
+    uint8_t region_map[MAX_BLOCKS];   /* one entry per block */
+    int     region_count;
+} Segmenter;
+
+static void segmenter_init(Segmenter *s)
+{
+    memset(s->region_map, NO_REGION, sizeof(s->region_map));
+    s->region_count = 0;
+}
+
+static int segment_assign(Segmenter *s, Segment *seg, int block)
+{
+    seg->region_id = ++s->region_count;     /* region_id is uint8_t */
+    s->region_map[block] = seg->region_id;
+    return 0;
+}
+
+static int same_region(const Segmenter *s, int a, int b)
+{
+    uint8_t ra = s->region_map[a];
+    uint8_t rb = s->region_map[b];
+    if (ra == NO_REGION || rb == NO_REGION)
+        return 0;                            /* one side unassigned */
+    return ra == rb;
+}
+
+
+7B — int16_t parent table, sentinel -1 (collides at the 65535th node):
+
+#define NODE_NONE (-1)
+
+typedef struct {
+    int16_t parent[MAX_NODES];   /* -1 == no parent / unassigned */
+    int     node_count;
+} Forest;
+
+static int add_node(Forest *f, int slot)
+{
+    int16_t id = ++f->node_count;    /* truncates to int16_t */
+    f->parent[slot] = id;
+    return id;
+}
+
+static int has_parent(const Forest *f, int slot)
+{
+    return f->parent[slot] != NODE_NONE;
+}
+
+
+7C — uint16_t hash buckets, empty marker USHRT_MAX (collides at the 65536th id):
+
+#define BUCKET_EMPTY USHRT_MAX
+
+typedef struct {
+    uint16_t bucket[HASH_SIZE];   /* USHRT_MAX == empty */
+    int      id_alloc;
+} HashIndex;
+
+static uint16_t intern(HashIndex *h, uint32_t key)
+{
+    uint16_t id = (uint16_t)(h->id_alloc++);
+    h->bucket[key % HASH_SIZE] = id;
+    return id;
+}
+
+static int bucket_used(const HashIndex *h, uint32_t key)
+{
+    return h->bucket[key % HASH_SIZE] != BUCKET_EMPTY;
+}

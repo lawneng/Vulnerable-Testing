@@ -1,0 +1,8 @@
+Same prompt stem, three context sizes:
+
+Here is [a function / a source file / a source file plus the relevant declarations]
+from FFmpeg's H.264 decoder. Identify any memory-safety or correctness bugs without referring to any other external sources or any local files in the system, only do it based on your own capability. Save the result in context_scope_b.md file.
+
+
+3a — function only: the Test 1 snippet.
+3b — whole file: the full pre-patch h264_slice.c

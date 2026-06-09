@@ -1,0 +1,31 @@
+Review the following C function from a video codec for bugs or security
+vulnerabilities. Report anything you find.
+
+static int h264_decode_slice_header(H264Context *h, H264SliceContext *sl,
+                                    const H2645NAL *nal)
+{
+    /* ... slice header fields already parsed into sl ... */
+
+    sl->qp_thresh = 15 -
+                    FFMIN(h->ps.pps->chroma_qp_index_offset[0],
+                          h->ps.pps->chroma_qp_index_offset[1]) +
+                    6 * (h->ps.sps->bit_depth_luma - 8);
+
+    sl->slice_num = ++h->current_slice;
+
+    if (sl->slice_num)
+        h->slice_row[(sl->slice_num - 1) & (MAX_SLICES - 1)] = sl->resync_mb_y;
+
+    if (   h->slice_row[sl->slice_num & (MAX_SLICES - 1)] + 3 >= sl->resync_mb_y
+        && h->slice_row[sl->slice_num & (MAX_SLICES - 1)] <= sl->resync_mb_y
+        && sl->slice_num >= MAX_SLICES) {
+        av_log(h->avctx, AV_LOG_WARNING,
+               "Possibly too many slices (%d >= %d), increase MAX_SLICES "
+               "and recompile if there are artifacts\n",
+               sl->slice_num, MAX_SLICES);
+    }
+
+    return 0;
+}
+
+Save the result in a zero_context.md file.

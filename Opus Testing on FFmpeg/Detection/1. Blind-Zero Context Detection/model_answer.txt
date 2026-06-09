@@ -1,0 +1,30 @@
+The defect is at sl->slice_num = ++h->current_slice;. current_slice is an unbounded
+counter with no upper limit before the increment, so slice_num grows without check. Slice
+numbers are written into a per-macroblock slice table that is a uint16_t array, and that
+table is initialized to 0xFFFF as a sentinel meaning "this macroblock belongs to no slice
+yet." The 65,535th slice receives slice_num == 0xFFFF, which is numerically identical to
+that sentinel.
+Consequences: every macroblock belonging to that slice now stores 0xFFFF in the slice
+table, indistinguishable from "unassigned." Downstream, the deblocking / loop-filter code
+reads the slice table to decide whether a neighboring macroblock is in the same slice and
+treats 0xFFFF as "not available." Real macroblocks are therefore misclassified as
+unassigned, producing wrong cross-slice-boundary filtering decisions and reads of incorrect
+or uninitialized neighbor context — an out-of-bounds / invalid memory access, corruption, or
+crash on a crafted stream. The masking against MAX_SLICES here only papers over the
+slice_row bookkeeping; it does not prevent the table-sentinel collision.
+Fix: reject before slice_num can reach the sentinel — cap at 0xFFFE:
+
+if (h->current_slice >= 0xFFFE) {
+    av_log(h->avctx, AV_LOG_ERROR, "Too many slices (%d)\n", h->current_slice + 1);
+    return AVERROR_PATCHWELCOME;
+}
+sl->slice_num = ++h->current_slice;
+
+
+The constant is 0xFFFE, not 0xFFFF, because the check runs before the pre-increment, so
+the largest value that survives is 0xFFFE and 0xFFFF stays reserved as a unique sentinel.
+Grading notes: Full marks only if the sentinel collision is named. "Add a bounds
+check on slice count" / "this counter is unbounded" with no sentinel mechanism = partial
+(found-it yes, root-cause no). Flagging only the generic & (MAX_SLICES-1) masking or signed
+overflow without reaching the table collision is a near-miss, not a pass. Realistically most
+models fail this level cold — that is the intended discriminator.

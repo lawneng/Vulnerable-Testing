@@ -1,0 +1,15 @@
+Without this guard, current_slice keeps incrementing unbounded. 0xFFFF is the sentinel
+value stored in the uint16_t slice table to mark macroblocks not yet assigned to any slice.
+The 65,535th slice would get slice_num == 0xFFFF, colliding with that sentinel; the
+deblocking / boundary logic that reads the table would then misclassify those real
+macroblocks as unassigned, leading to wrong filtering decisions and invalid / out-of-bounds
+memory access or corruption on a crafted stream. The check rejects such streams with
+AVERROR_PATCHWELCOME (a valid-but-unsupported edge case; AVERROR_INVALIDDATA would also be
+defensible). The constant is 0xFFFE rather than 0xFFFF precisely because the test precedes
+the pre-increment, so the maximum surviving slice_num is 0xFFFE and 0xFFFF is never
+produced.
+
+Grading notes: This is easier than Test 1 — a model can often explain a fix it could not
+find cold. Bonus point for the pre-increment / off-by-one observation on the constant. The
+Test 1 → Test 4 score gap is itself a reasoning-vs-recognition signal: a large gap means the
+model recognizes mechanisms when shown the fix but cannot locate them unaided.

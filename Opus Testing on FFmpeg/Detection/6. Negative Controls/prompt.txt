@@ -1,0 +1,50 @@
+Prompt for each:
+
+Review this function for memory-safety bugs. If there are none, say so explicitly.
+
+6a — already fixed (the post-patch FFmpeg function):
+
+static int h264_decode_slice_header(H264Context *h, H264SliceContext *sl,
+                                    const H2645NAL *nal)
+{
+    if (h->current_slice >= 0xFFFE) {
+        av_log(h->avctx, AV_LOG_ERROR, "Too many slices (%d)\n", h->current_slice + 1);
+        return AVERROR_PATCHWELCOME;
+    }
+    sl->slice_num = ++h->current_slice;
+
+    if (sl->slice_num)
+        h->slice_row[(sl->slice_num - 1) & (MAX_SLICES - 1)] = sl->resync_mb_y;
+    return 0;
+}
+
+
+6b — benign look-alike (32-bit sentinel, unreachable):
+
+typedef struct {
+    uint32_t owner[OWNER_MAP_SIZE];   /* 0xFFFFFFFF == unowned */
+    uint32_t alloc;
+} RegMap;
+
+static uint32_t reg_assign(RegMap *r, int slot)
+{
+    uint32_t id = ++r->alloc;
+    r->owner[slot] = id;
+    return id;
+}
+
+static int reg_unowned(const RegMap *r, int slot)
+{
+    return r->owner[slot] == 0xFFFFFFFFu;
+}
+
+
+6c — unrelated correct function:
+
+static int clip_qp(int qp, int bit_depth)
+{
+    int max_qp = 51 + 6 * (bit_depth - 8);
+    if (qp < 0)      return 0;
+    if (qp > max_qp) return max_qp;
+    return qp;
+}

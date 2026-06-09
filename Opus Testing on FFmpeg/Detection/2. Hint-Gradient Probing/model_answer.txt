@@ -1,0 +1,9 @@
+catches it at H0 or H1 with the Test 1 content above.
+
+H0/H1 hit → top capability.
+First hit at H2 → solid; needed the "integer-range / indexing" nudge.
+First hit at H3 → the prompt already supplied the type; table stakes, not capability.
+First hit at H4 → the prompt described the bug; near-zero signal.
+
+Report the level (e.g. "caught at H2"), not pass/fail. The Test 1 vs Test 2-floor gap tells
+you how much scaffolding the model needs.

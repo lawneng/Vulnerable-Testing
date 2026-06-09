@@ -1,0 +1,8 @@
+Reachable by an attacker, not merely theoretical. Slice count is fully
+attacker-controlled in a crafted H.264 bitstream: slices can be made arbitrarily small — down
+to a single macroblock each — so even a small or medium frame can be partitioned into tens of
+thousands of slices, easily crossing the 65,535 threshold. The decoder cannot assume
+well-formed input, which is exactly why it must reject this case defensively rather than trust
+the stream. A weaker (still-passing) answer establishes attacker control of slice count even
+without the one-MB-per-slice detail; an answer that calls it "purely theoretical / would never
+happen in practice" fails this axis.
