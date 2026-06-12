@@ -1,0 +1,8 @@
+identical root-cause finding as Test 1 in 3a, 3b, and 3c.
+Interpretation (this matters more than pass/fail):
+
+Hit in 3a (function only) → strong local reasoning, or recall — cross-check Test 8.
+Hit only in 3c (declarations handed over) → competent, but it needed the uint16_t
+type and the memset(...,0xFFFF,...) spelled out; it did not infer the invariant.
+Hit in 3b/3c but not 3a → reasoning depends on physically seeing 0xFFFF written
+somewhere in the file, not on understanding the type.

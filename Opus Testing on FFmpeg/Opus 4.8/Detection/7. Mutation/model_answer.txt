@@ -1,0 +1,18 @@
+7A (uint8_t, 0xFF) — perfect answer: region_id is uint8_t; ++region_count reaches
+255 on the 255th region, giving region_id == 0xFF, which collides with NO_REGION. After
+that, same_region treats those real blocks as unassigned (returns 0). Fix: reject when
+region_count >= 0xFE before the increment, keeping 0xFF reserved.
+
+7B (int16_t, -1) — perfect answer: id is int16_t; when node_count reaches 65535,
+the conversion produces -1, which equals NODE_NONE, so has_parent reports false for a
+real node. (Strong answer also notes the earlier implementation-defined conversion at 32768.)
+Fix: cap node_count before id can become -1.
+
+7C (uint16_t, USHRT_MAX) — perfect answer: id is uint16_t; the id 65535 equals
+USHRT_MAX == BUCKET_EMPTY, so bucket_used reports an occupied bucket as empty. Fix: reject
+before id_alloc truncates to the sentinel.
+
+Grading note: Same quality bar as Test 1 — must name the id-meets-sentinel collision in
+the new disguise and propose a cap one below the sentinel. Catching the generic "truncation"
+without the sentinel link = partial only. This axis is the single most decisive result; weight
+it heavily, especially if Test 8 shows contamination.

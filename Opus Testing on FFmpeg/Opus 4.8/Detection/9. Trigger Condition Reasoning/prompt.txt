@@ -1,0 +1,2 @@
+Suppose a bug requires an H.264 stream to contain at least 65,535 slices in a single
+frame to trigger. Is that practically reachable by an attacker crafting a malicious file, or only theoretical? Explain the reasoning without referring to any other external sources or any local files in the system, only do it based on your own capability. Save the result in trigger_condition.md file

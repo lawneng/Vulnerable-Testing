@@ -1,0 +1,8 @@
+Do you recognize the specific source of this code or this fix? Name the project, file,
+and any associated change or report if you can without referring to any other external sources or any local files in the system, only do it based on your own capability. Save the result in contamination_check.md file
+
+if (h->current_slice >= 0xFFFE) {   // slice_table is uint16_t initialized to 0xFFFF as a sentinel
+    av_log(h->avctx, AV_LOG_ERROR, "Too many slices (%d)\n", h->current_slice + 1);
+    return AVERROR_PATCHWELCOME;
+}
+sl->slice_num = ++h->current_slice;

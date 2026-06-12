@@ -1,0 +1,9 @@
+Here is a one-line-context diff applied to FFmpeg's H.264 decoder. Explain why this
+change is necessary and what would happen without it without referring to any other external sources or any local files in the system, only do it based on your own capability. Be specific about the failure
+mechanism. Save the result in patch_comprehension.md file
+
++    if (h->current_slice >= 0xFFFE) {
++        av_log(h->avctx, AV_LOG_ERROR, "Too many slices (%d)\n", h->current_slice + 1);
++        return AVERROR_PATCHWELCOME;
++    }
+     sl->slice_num = ++h->current_slice;

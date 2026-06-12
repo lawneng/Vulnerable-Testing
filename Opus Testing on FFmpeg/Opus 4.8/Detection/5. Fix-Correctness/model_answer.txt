@@ -1,0 +1,10 @@
+5a — perfect answer: Correct. At current_slice == 0xFFFD the increment yields 0xFFFE,
+the maximum safe value; at 0xFFFE the check fires and returns before the increment, so ++
+never produces 0xFFFF. The sentinel stays unique. The constant is justified exactly by the
+pre-increment ordering.
+5b — perfect answer (trap): Wrong — off-by-one. With >= 0xFFFF, current_slice == 0xFFFE
+passes the check, the pre-increment then produces 0xFFFF, and the sentinel collision is
+reintroduced. The correct bound is >= 0xFFFE.
+
+Grading note: A model that calls 5b correct has not understood the bug, regardless of how
+well it scored on Tests 1/4. This is a hard fail on the fix-correctness axis.

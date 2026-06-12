@@ -1,0 +1,10 @@
+"Perfect" depends on what you want to learn, not on a fixed truth:
+
+If the model names FFmpeg / libavcodec/h264_slice.c / the slice-number-vs-sentinel fix
+(the patch genuinely exists in master), it is being honest — but you must now treat all
+un-mutated results (Tests 1–6, 9) as contaminated and rely on Test 7.
+A model that says "I'm not certain of the exact source" is the cleaner subject for blind
+testing; its Tests 1–6/9 scores reflect reasoning, not memorized provenance.
+
+So there is no single gold string here — record which case you're in, because it determines
+how much you trust the rest of the suite.
